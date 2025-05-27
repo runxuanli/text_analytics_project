@@ -1,7 +1,7 @@
 **Northwestern University — Text Analytics Final Project**  
 **Spring 2025**
 
-## 📌 Overview
+## Overview
 
 This project applies multimodal machine learning techniques to classify movie genres using both textual and visual data from the [IMDB Multimodal Genre Dataset](https://www.kaggle.com/datasets/zulkarnainsaurav/imdb-multimodal-vision-and-nlp-genre-classification). Our models analyze movie poster images and plot summaries to predict genres: **Action**, **Comedy**, **Horror**, and **Romance**.
 
