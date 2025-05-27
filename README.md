@@ -16,20 +16,20 @@ We implemented a full pipeline covering:
 ## Project Structure
 
 text_analytics_project/
-│
-├── genre_app.py # Streamlit app for interactive predictions
-├── text_project.ipynb # Main Jupyter notebook with code and analysis
-├── label_encoder.pkl # Saved label encoder
-├── tfidf_vectorizer.pkl # TF-IDF vectorizer
-├── naive_bayes_model.pkl # Naive Bayes model
+├── genre_app.py                  # Streamlit app for interactive predictions
+├── text_project.ipynb            # Main Jupyter notebook with code and analysis
+├── label_encoder.pkl             # Saved label encoder
+├── tfidf_vectorizer.pkl          # TF-IDF vectorizer
+├── naive_bayes_model.pkl         # Naive Bayes model
 ├── logistic_regression_model.pkl # Logistic Regression model
-├── lstm_model.keras # Trained LSTM model
-├── lstm_tokenizer.json # Tokenizer used for LSTM
-├── lstm_model_architecture.png # LSTM model architecture plot
-├── Top 20 Words/ # CSVs and charts of top words per genre
-├── wordclouds/ # Word cloud visualizations
-├── Project Discussion.html # HTML export of team discussions
-└── README.md # This file
+├── lstm_model.keras              # Trained LSTM model
+├── lstm_tokenizer.json           # Tokenizer used for LSTM
+├── lstm_model_architecture.png   # LSTM model architecture plot
+├── Top 20 Words/                 # CSVs and charts of top words per genre
+├── wordclouds/                   # Word cloud visualizations
+├── Project Discussion.html       # HTML export of team discussions
+└── README.md                     # This file
+
 
 
 ## Tasks Completed
