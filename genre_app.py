@@ -8,6 +8,8 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import tokenizer_from_json
 from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassification
 
+from transformers import PegasusTokenizer, PegasusForConditionalGeneration, pipeline
+
 # ── Load Models and Tools ─────────────────
 nb_model = joblib.load("naive_bayes_model.pkl")
 lr_model = joblib.load("logistic_regression_model.pkl")
@@ -22,6 +24,38 @@ hf_model = DistilBertForSequenceClassification.from_pretrained("bert_model/")
 hf_model.eval()
 
 le = joblib.load("label_encoder.pkl")
+
+# ── Pegasus Summarizer ────────────────────
+model_name = "google/pegasus-cnn_dailymail"
+tokenizer = PegasusTokenizer.from_pretrained(model_name, use_fast=False)
+model = PegasusForConditionalGeneration.from_pretrained(model_name, low_cpu_mem_usage=False)
+summarizer = pipeline("summarization", model=model, tokenizer=tokenizer)
+
+
+def chunk_text(text, chunk_size=500):
+    """
+    Split long text into smaller chunks of ~chunk_size words.
+    """
+    words = text.split()
+    return [" ".join(words[i:i + chunk_size]) for i in range(0, len(words), chunk_size)]
+
+def summarize_long_text(text, summarizer, max_length=200, min_length=70):
+    """
+    Break long text into chunks, summarize each chunk, and return concatenated summaries.
+    """
+    chunks = chunk_text(text, chunk_size=500)
+    summaries = []
+
+    for chunk in chunks:
+        try:
+            summary = summarizer(chunk, max_length=max_length, min_length=min_length, do_sample=False)[0]['summary_text']
+            summaries.append(summary)
+        except Exception as e:
+            print(f"[Error] Skipping chunk due to: {e}")
+            continue
+
+    return " ".join(summaries)
+
 
 # ── Prediction Function ───────────────────
 def predict_genre(summary):
@@ -50,18 +84,28 @@ def predict_genre(summary):
     }
 
 # ── Streamlit UI ──────────────────────────
-st.set_page_config(page_title="Genre Predictor", layout="centered")
-st.title("🎬 Movie Genre Predictor")
+st.set_page_config(page_title="Movie Analysis Tool", layout="centered")
+st.title("Movie Analysis Tool: Plot Summary and Genre Predictor")
 
-summary = st.text_area("Enter a movie description below:")
+# Step 1: Text input
+text_input = st.text_area("Enter a movie description or plot:")
 
-if st.button("Predict"):
-    if summary.strip() == "":
-        st.warning("Please enter a summary.")
+# Step 2: Single action button
+if st.button("Analyze"):
+    if text_input.strip() == "":
+        st.warning("Please enter a description before analyzing.")
     else:
-        with st.spinner("Predicting..."):
-            results = predict_genre(summary)
+        with st.spinner("Summarizing..."):
+            final_input = summarize_long_text(text_input, summarizer)
+        st.success("Summarization Complete!")
+
+        st.subheader("Summarized Movie Description")
+        st.write(final_input)
+
+        with st.spinner("Predicting genre..."):
+            results = predict_genre(final_input)
         st.success("Prediction Complete!")
 
+        st.subheader("Genre Predictions")
         for model, genre in results.items():
             st.write(f"**{model}**: {genre}")
