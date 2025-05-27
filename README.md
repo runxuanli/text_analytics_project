@@ -28,6 +28,7 @@ text_analytics_project/
 ├── Top 20 Words/                 # CSVs and charts of top words per genre
 ├── wordclouds/                   # Word cloud visualizations
 ├── Project Discussion.html       # HTML export of team discussions
+├── Movie Analysis Tool.pdf       # Interactive predictions result
 └── README.md                     # This file
 
 ## Tasks Completed
